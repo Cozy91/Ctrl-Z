@@ -1,13 +1,18 @@
 #pragma once
 
-#include<SFML/Graphics.hpp>
-class Game{
-   public:
-         Game();
-         void Run();
+#define SFML_ENABLE_COMPAT
 
-   private:
-   sf::RenderWindow window;
-   sf::Event event;
-
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+class Game {
+public:
+    Game();
+    void Run();
+private:
+    sf::Texture backgroundtexture;
+    sf::Sprite  background;
+    sf::RenderWindow window;
+    sf::Event event;
 };
+
