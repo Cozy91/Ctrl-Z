@@ -9,10 +9,13 @@ class Game {
 public:
     Game();
     void Run();
+    void draw();
+    void update();
 private:
     sf::Texture backgroundtexture;
     sf::Sprite  background;
     sf::RenderWindow window;
     sf::Event event;
+    sf::CircleShape circle;
 };
 

@@ -3,15 +3,21 @@
 #include <iostream>
 
 using namespace std;  
+void update();
 
-Game::Game() {
-    if (!backgroundtexture.loadFromFile("/home/cozy/Downloads/ChatGPT Image Aug 7, 2025, 03_38_41 PM.png")) {
-        cout << "Failed to load background image!" << endl;
-    }
-    background.setTexture(backgroundtexture);
+Game::Game():circle(60.f) 
+{
+  
 
     window.create(sf::VideoMode(800, 600), "Ctrl+Z");
+    window.setFramerateLimit(60);
+
+
+    
+circle.setPosition(window.getSize().x/2,window.getSize().y/2);
+circle.setFillColor(sf::Color::Red);
 }
+
 
 void Game::Run() {
     while (window.isOpen()) {
@@ -19,11 +25,26 @@ void Game::Run() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+                if(event.type == sf::Event::KeyPressed && event.key.code==sf::Keyboard::Escape){
+           window.close();
+         }
         }
-
-        window.clear();
-        window.draw(background);
-        window.display();
+     
+       update();
+       draw();
     }
 }
+    
+void Game::draw(){
+  window.clear();
+   window.draw(circle);
+   window.display();
+} 
+
+
+void Game::update(){
+
+}
+
+
 
