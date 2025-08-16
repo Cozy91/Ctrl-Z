@@ -13,7 +13,7 @@ Game::Game():circle(60.f)
     window.setFramerateLimit(60);
 
 
-    
+circle.setOrigin(circle.getRadius(),circle.getRadius());    
 circle.setPosition(window.getSize().x/2,window.getSize().y/2);
 circle.setFillColor(sf::Color::Red);
 }
@@ -42,9 +42,37 @@ void Game::draw(){
 } 
 
 
-void Game::update(){
+void Game::update() {
+    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) &&
+        circle.getPosition().x - circle.getRadius() > 0) {
+        circle.move(-0.5f, 0);
+    }
 
+  
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
+        circle.getPosition().x + circle.getRadius() < window.getSize().x) {
+        circle.move(0.5f, 0);
+    }
+
+    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) &&
+        circle.getPosition().y + circle.getRadius() < window.getSize().y) {
+        circle.move(0, 0.5f);
+    }
+
+    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) &&
+        circle.getPosition().y - circle.getRadius() > 0) {
+        circle.move(0, -0.5f);
+    }
 }
+
+
+
+
+
+
 
 
 
