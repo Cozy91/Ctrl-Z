@@ -1,78 +1,73 @@
-#include "../headers/game.h"
+#include "game.h"
 
-#include <iostream>
-
-using namespace std;  
-void update();
-
-Game::Game():circle(60.f) 
+Game::Game()
+    : window(sf::VideoMode(800,600), "SFML Game"),
+      state(GameState::MainMenu)
 {
-  
+    if (!font.openFromFile("arial.ttf"))
+        std::cerr << "Font missing\n";
 
-    window.create(sf::VideoMode(800, 600), "Ctrl+Z");
-    window.setFramerateLimit(60);
+    if (!playerTexture.loadFromFile("player.png"))
+        std::cerr << "Player texture missing\n";
 
+    playerSprite.setTexture(playerTexture);
+    playerSprite.setPosition({400.f, 300.f});
 
-circle.setOrigin(circle.getRadius(),circle.getRadius());    
-circle.setPosition(window.getSize().x/2,window.getSize().y/2);
-circle.setFillColor(sf::Color::Red);
+    menuText.setFont(font);
+    menuText.setString("Press Enter to Play");
+    menuText.setCharacterSize(50);
+
+    sf::Vector2f textCenter = {
+        menuText.getLocalBounds().width / 2.f,
+        menuText.getLocalBounds().height / 2.f
+    };
+    menuText.setOrigin(textCenter);
+    menuText.setPosition({400.f, 300.f});
 }
 
-
-void Game::Run() {
+void Game::run() {
     while (window.isOpen()) {
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-                if(event.type == sf::Event::KeyPressed && event.key.code==sf::Keyboard::Escape){
-           window.close();
-         }
-        }
-     
-       update();
-       draw();
+        processEvents();
+        update();
+        render();
     }
 }
-    
-void Game::draw(){
-  window.clear();
-   window.draw(circle);
-   window.display();
-} 
 
+void Game::processEvents() {
+    while (auto eventOpt = window.pollEvent()) {
+        auto event = *eventOpt;
+
+        if (event.type == sf::Event::Closed)
+            window.close();
+
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Key::Escape)
+                window.close();
+
+            if (event.key.code == sf::Key::Enter && state == GameState::MainMenu)
+                state = GameState::Playing;
+        }
+    }
+}
 
 void Game::update() {
-    
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) &&
-        circle.getPosition().x - circle.getRadius() > 0) {
-        circle.move(-0.5f, 0);
-    }
+    if (state == GameState::Playing) {
+        sf::Vector2f move{0.f, 0.f};
+        if (sf::Keyboard::isKeyPressed(sf::Key::A)) move.x -= 0.5f;
+        if (sf::Keyboard::isKeyPressed(sf::Key::D)) move.x += 0.5f;
+        if (sf::Keyboard::isKeyPressed(sf::Key::W)) move.y -= 0.5f;
+        if (sf::Keyboard::isKeyPressed(sf::Key::S)) move.y += 0.5f;
 
-  
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
-        circle.getPosition().x + circle.getRadius() < window.getSize().x) {
-        circle.move(0.5f, 0);
-    }
-
-    
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) &&
-        circle.getPosition().y + circle.getRadius() < window.getSize().y) {
-        circle.move(0, 0.5f);
-    }
-
-    
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) &&
-        circle.getPosition().y - circle.getRadius() > 0) {
-        circle.move(0, -0.5f);
+        playerSprite.move(move);
     }
 }
 
-
-
-
-
-
-
-
+void Game::render() {
+    window.clear();
+    if (state == GameState::MainMenu)
+        window.draw(menuText);
+    else if (state == GameState::Playing)
+        window.draw(playerSprite);
+    window.display();
+}
 

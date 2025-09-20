@@ -1,21 +1,35 @@
-#pragma once
-
-#define SFML_ENABLE_COMPAT
+#ifndef GAME_H
+#define GAME_H
 
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
+#include <iostream>
+
+enum class GameState {
+    MainMenu,
+    Playing
+};
+
 class Game {
 public:
     Game();
-    void Run();
-    void draw();
-    void update();
+    void run();
+
 private:
-    sf::Texture backgroundtexture;
-    sf::Sprite  background;
+    void processEvents();
+    void update();
+    void render();
+
     sf::RenderWindow window;
-    sf::Event event;
-    sf::CircleShape circle;
+    GameState state;
+
+    sf::Texture texture;
+    sf::Sprite sprite;
+
+    sf::Font font;
+    sf::Text menuText;
+
+    sf::CircleShape player;
 };
+
+#endif
 
